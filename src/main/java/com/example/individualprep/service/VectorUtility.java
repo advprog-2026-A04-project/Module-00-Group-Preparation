@@ -33,7 +33,15 @@ public class VectorUtility {
     }
     
     public double norm(double[] v1) {
-        // TODO: Implement me properly!
-        return 0.0;
+        if (v1 == null) {
+            throw new IllegalArgumentException("v1 must not be null");
+        }
+
+        double sumOfSquares = 0.0;
+        for (double x: v1) {
+            sumOfSquares += x*x;
+        }
+
+        return Math.sqrt(sumOfSquares);
     }
 }
