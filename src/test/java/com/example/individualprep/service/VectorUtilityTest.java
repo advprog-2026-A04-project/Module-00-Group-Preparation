@@ -9,6 +9,48 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class VectorUtilityTest {
 
     @Test
+    void add_nullVector1() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = null;
+        double[] v2 = {1, 2, 3};
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.add(v1, v2));
+        assertEquals("Vector must not be null", exception.getMessage());
+    }
+
+    @Test
+    void add_nullVector2() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2, 3};
+        double[] v2 = null;
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.add(v1, v2));
+        assertEquals("Vector must not be null", exception.getMessage());
+    }
+
+    @Test
+    void add_differentLength() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2};
+        double[] v2 = {1, 2, 3};
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.add(v1, v2));
+        assertEquals("Vectors must have the same length", exception.getMessage());
+    }
+
+    @Test
+    void add_success() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2, 3};
+        double[] v2 = {1, 2, 3};
+        double[] expected = {2, 4, 6};
+
+        assertArrayEquals(expected, vectorUtility.add(v1, v2));
+
+
+    }
+
+    @Test
     void multiply_multipliesEachElementByScalar() {
         VectorUtility vectorUtility = new VectorUtility();
         double[] input = {1.0, -2.5, 0.0};
