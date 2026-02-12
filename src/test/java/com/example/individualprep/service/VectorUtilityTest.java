@@ -76,5 +76,48 @@ class VectorUtilityTest {
 
         assertEquals("v1 must not be null", exception.getMessage());
     }
+
+    @Test
+    void dotProduct_nullVector1() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = null;
+        double[] v2 = {1, 2, 3};
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.dotProduct(v1, v2));
+        assertEquals("Vector must not be null", exception.getMessage());
+    }
+
+    @Test
+    void dotProduct_nullVector2() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2, 3};
+        double[] v2 = null;
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.dotProduct(v1, v2));
+        assertEquals("Vector must not be null", exception.getMessage());
+    }
+
+    @Test
+    void dotProduct_differentLength() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2};
+        double[] v2 = {1, 2, 3};
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.dotProduct(v1, v2));
+        assertEquals("Vectors must have the same length", exception.getMessage());
+    }
+
+    @Test
+    void dotProduct_success() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2, 3};
+        double[] v2 = {4, 5, 6};
+
+        double result = vectorUtility.dotProduct(v1, v2);
+
+        // 1*4 + 2*5 + 3*6 = 32
+        assertEquals(32.0, result);
+    }
+
 }
 
