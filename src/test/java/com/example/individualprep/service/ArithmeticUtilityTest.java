@@ -33,4 +33,23 @@ class ArithmeticUtilityTest {
         assertEquals(Double.POSITIVE_INFINITY, arithmeticUtility.add(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
         assertEquals(Double.NaN, arithmeticUtility.add(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY));
     }
+
+    @Test
+    void subtract_subtractsOperands() {
+        ArithmeticUtility arithmeticUtility = new ArithmeticUtility();
+
+        assertEquals(-2.0, arithmeticUtility.subtract(1.0, 3.0));
+        assertEquals(-4.0, arithmeticUtility.subtract(6.0, 10.0));
+        assertEquals(-1.25, arithmeticUtility.subtract(1.25, 2.5));
+    }
+
+    @Test
+    void subtract_edgeCases() {
+        ArithmeticUtility arithmeticUtility = new ArithmeticUtility();
+
+        assertEquals(Double.POSITIVE_INFINITY, arithmeticUtility.subtract(Double.POSITIVE_INFINITY, 0));
+        assertEquals(Double.NEGATIVE_INFINITY, arithmeticUtility.subtract(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+        assertEquals(Double.NaN, arithmeticUtility.subtract(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+    }
+
 }
