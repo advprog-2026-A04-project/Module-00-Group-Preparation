@@ -1,0 +1,41 @@
+name: CI Anita
+
+on:
+  push:
+    branches: ["CI/CD-Anita"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-test-sonar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      # Build + Unit Test + Linter
+      - name: Build, Test, Checkstyle
+        run: ./gradlew clean build check
+
+      # SonarCloud Scan
+      - name: SonarCloud Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar \
+          -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
+          -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
+          -Dsonar.host.url=https://sonarcloud.io
