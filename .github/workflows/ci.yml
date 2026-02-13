@@ -4,15 +4,20 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
     env:
+      SONAR_HOST_URL: https://sonarcloud.io
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
       SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -24,31 +29,41 @@ jobs:
           java-version: "21"
           cache: gradle
 
-      - name: Make Gradle wrapper executable
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run tests and linter
-        run: ./gradlew check
-
-      - name: SonarCloud scan
-        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '' }}
-        uses: SonarSource/sonarcloud-github-action@v2
+      - name: Build with Gradle
+        uses: ./.github/actions/gradle-build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.sources=src/main/java
-            -Dsonar.tests=src/test/java
-            -Dsonar.java.binaries=build/classes/java/main
+          SONAR_PROJECT_KEY: ${{ env.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ env.SONAR_ORGANIZATION }}
 
-      - name: SonarCloud quality gate
-        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '' }}
-        uses: SonarSource/sonarqube-quality-gate-action@v1
-        env:
-          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+      - name: Upload Checkstyle Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-reports
+          path: build/reports/checkstyle
+          if-no-files-found: ignore
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            build/reports/tests
+            build/test-results/test
+          if-no-files-found: ignore
+
+      - name: Upload Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: build/reports/jacoco/test
+          if-no-files-found: ignore
 

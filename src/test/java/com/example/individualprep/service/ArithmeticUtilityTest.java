@@ -7,6 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ArithmeticUtilityTest {
 
     @Test
+    void exponent_raisedToPower() {
+        ArithmeticUtility arithmeticUtility = new ArithmeticUtility();
+
+        assertEquals(27, arithmeticUtility.exponent(3, 3));
+        assertEquals(-27, arithmeticUtility.exponent(-3, 3));
+    }
+
+    @Test
     void multiply_multipliesOperands() {
         ArithmeticUtility arithmeticUtility = new ArithmeticUtility();
 
