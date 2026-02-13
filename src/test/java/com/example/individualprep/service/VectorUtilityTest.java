@@ -52,6 +52,46 @@ class VectorUtilityTest {
     }
 
     @Test
+    void subtract_nullVector1() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = null;
+        double[] v2 = {1, 2, 3};
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.subtract(v1, v2));
+        assertEquals("Vector must not be null", exception.getMessage());
+    }
+
+    @Test
+    void subtract_nullVector2() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2, 3};
+        double[] v2 = null;
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.subtract(v1, v2));
+        assertEquals("Vector must not be null", exception.getMessage());
+    }
+
+    @Test
+    void subtract_differentLength() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {1, 2};
+        double[] v2 = {1, 2, 3};
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> vectorUtility.subtract(v1, v2));
+        assertEquals("Vectors must have the same length", exception.getMessage());
+    }
+
+    @Test
+    void subtract_success() {
+        VectorUtility vectorUtility = new VectorUtility();
+        double[] v1 = {5, 7, 9};
+        double[] v2 = {1, 2, 3};
+        double[] expected = {4, 5, 6};
+
+        assertArrayEquals(expected, vectorUtility.subtract(v1, v2));
+    }
+
+    @Test
     void multiply_multipliesEachElementByScalar() {
         VectorUtility vectorUtility = new VectorUtility();
         double[] input = {1.0, -2.5, 0.0};
