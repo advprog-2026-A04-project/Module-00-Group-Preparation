@@ -25,7 +25,7 @@ runs:
         restore-keys: |
           ${{ runner.os }}-sonar
 
-    - name: SonarCloud Scan
+    - name: SonarCloud Scan (wait for Quality Gate)
       if: ${{ env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '' }}
       uses: SonarSource/sonarcloud-github-action@v2
       env:
@@ -44,9 +44,3 @@ runs:
           -Dsonar.junit.reportPaths=build/test-results/test
           -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
 
-    - name: Check SonarCloud Quality Gate
-      if: ${{ env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '' }}
-      uses: SonarSource/sonarqube-quality-gate-action@v1
-      env:
-        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
